@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:cardCornerRadius="25dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="241.89dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <Button
+                android:id="@+id/current"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_cities"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/white"
+                android:text="Current City"/>
+
+            <Button
+                android:id="@+id/london"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_cities"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/white"
+                android:text="London"/>
+
+            <Button
+                android:id="@+id/madrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_cities"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/white"
+                android:text="Madrid"/>
+
+            <Button
+                android:id="@+id/new_york"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_cities"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/white"
+                android:text="Ney York"/>
+
+            <Button
+                android:id="@+id/paris"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_cities"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/white"
+                android:text="Paris"/>
+
+            <Button
+                android:id="@+id/singapur"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_cities"
+                android:textColor="@color/white"
+                android:layout_marginBottom="10dp"
+                android:text="Singapur"/>
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_cancelar"
+                android:textColor="#C42F56"
+                android:text="Cancelar"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

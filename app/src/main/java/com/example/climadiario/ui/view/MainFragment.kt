@@ -6,12 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +21,6 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.viewpager.widget.ViewPager
 import com.agrawalsuneet.dotsloader.loaders.ZeeLoader
 import com.example.climadiario.R
 import com.example.climadiario.data.models.Base
@@ -52,8 +53,11 @@ class MainFragment : BaseFragment() {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
 
-    private lateinit var cities: Spinner
+    private lateinit var city: TextView
+    private lateinit var change: TextView
     private lateinit var zeeLoader: ZeeLoader
+
+    private var wantLocation = true
 
     private val locationListener: LocationListener = object : LocationListener {
         @SuppressLint("SetTextI18n")
@@ -61,8 +65,7 @@ class MainFragment : BaseFragment() {
             latitude = location.latitude
             longitude = location.longitude
             println("latitud $latitude y longitud $longitude")
-            //getWeather(latitude.toString(), longitude.toString())
-            getCurrent(latitude.toString(), longitude.toString())
+            if (wantLocation) getCurrent(latitude.toString(), longitude.toString())
         }
 
         override fun onStatusChanged(s: String, i: Int, bundle: Bundle) {}
@@ -84,7 +87,11 @@ class MainFragment : BaseFragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
@@ -92,7 +99,8 @@ class MainFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cities = view.findViewById(R.id.cities)
+        city = view.findViewById(R.id.city)
+        change = view.findViewById(R.id.change)
         zeeLoader = view.findViewById(R.id.zeeLoader)
 
         locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -132,10 +140,12 @@ class MainFragment : BaseFragment() {
         service.getCurrent(lat, lon, "metric", API_ID).enqueue(object : Callback<Base> {
             override fun onResponse(call: Call<Base>, response: Response<Base>) {
                 if (response.isSuccessful) {
+                    wantLocation = false
                     println("body token: ${response.body()}")
 
+                    Log.i("Petición", "llegó")
+
                     zeeLoader.showView(false)
-                    cities.showView(true)
                     viewpager.showView(true)
 
                     var listDays = response.body()!!.daily!!.subList(0, 6)
@@ -152,87 +162,123 @@ class MainFragment : BaseFragment() {
         })
     }
 
-    private fun updateViewPager(listDays: List<Daily>){
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(context!!, R.array.cities, android.R.layout.simple_spinner_item).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            cities.adapter = adapter
-        }
+    private fun updateViewPager(listDays: List<Daily>) {
 
-        cities.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)
-                (parent.getChildAt(0) as TextView).textSize = 18.0f
-                when(position){
-                    0 -> {
-                        /*viewpager.showView(false)
-                        getCurrent(latitude.toString(), longitude.toString())*/
-                    }
-                    1 -> {
-                        /*viewpager.showView(false)
-                        getCurrent(latitude.toString(), longitude.toString())*/
-                    }
-                    2 -> {
-                        /*viewpager.showView(false)
-                        getCurrent(latitude.toString(), longitude.toString())*/
-                    }
-                    3 -> {
-                        /*viewpager.showView(false)
-                        getCurrent(latitude.toString(), longitude.toString())*/
-                    }
-                    4 -> {
-                        /*viewpager.showView(false)
-                        getCurrent(latitude.toString(), longitude.toString())*/
-                    }
-                    5 -> {
-                        /*viewpager.showView(false)
-                        getCurrent(latitude.toString(), longitude.toString())*/
-                    }
-                }
-            }
+        city.setOnClickListener { openDialog() }
+        change.setOnClickListener { openDialog() }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-
-        var listadoCity = mutableListOf<Day>()
+        var listadoDays = mutableListOf<Day>()
 
         val c = Calendar.getInstance()
         var day = c.time.day
         var numberDay = c.time.date
-        var mes = c.time.month+1
+        var mes = c.time.month + 1
 
         var dias = arrayOf("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo")
 
         for (i in 0 until (6)) {
-            listadoCity.add(Day(
-                dias[day -1],
-                numberDay.toString(),
-                mes,
-                listDays[i].temp!!.day!!.toFloat().roundToInt().toString(),
-                listDays[i].wind_speed!!.toFloat().roundToInt().toString(),
-                listDays[i].weather!!.first().main.toString()
-            ))
+            listadoDays.add(
+                Day(
+                    dias[day - 1],
+                    numberDay.toString(),
+                    mes,
+                    listDays[i].temp!!.day!!.toFloat().roundToInt().toString(),
+                    listDays[i].wind_speed!!.toFloat().roundToInt().toString(),
+                    listDays[i].weather!!.first().main.toString()
+                )
+            )
             numberDay++ //TODO: Debería validar que no se pase del límite del mes
-            println("Dia: ${listadoCity.last().nombre}")
-            if(day == 7) day = 1
+            if (day == 7) day = 1
             else day++
         }
 
         val listado: MutableList<ItemViewPager> = LinkedList()
+
+        WeatherFragment.dias = listadoDays
+
         for (i in 0 until (6)) {
             listado.add(
                 ItemViewPager(
                     "cancion $i",
-                    WeatherFragment.newInstance(i, listadoCity)
+                    WeatherFragment.newInstance(i)//, listadoCity)
                 )
             )
         }
         val adapter = ViewPageAdapter(childFragmentManager, listado)
         viewpager.adapter = adapter
 
+        //(viewpager.adapter as ViewPageAdapter).updateItems(listado)
+
         viewpager.pageMargin = -64
+    }
+
+    private fun openDialog() {
+        val dialogBuilder = AlertDialog.Builder(this.requireContext())
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_cities, null)
+        dialogBuilder.setView(dialogView)
+
+        var alert = dialogBuilder.create()
+        alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alert.show()
+
+        dialogView.findViewById<Button>(R.id.singapur).setOnClickListener {
+            wantLocation = true
+            city.text = "Singapur"
+            zeeLoader.showView(true)
+            viewpager.showView(false)
+            getCurrent("1.28967", "103.85007")
+            alert.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.london).setOnClickListener {
+            wantLocation = true
+            city.text = "London"
+            zeeLoader.showView(true)
+            viewpager.showView(false)
+            getCurrent("51.5072", "-0.1275")
+            alert.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.madrid).setOnClickListener {
+            wantLocation = true
+            city.text = "Madrid"
+            zeeLoader.showView(true)
+            viewpager.showView(false)
+            getCurrent("40.4167", "-3.70325")
+            alert.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.new_york).setOnClickListener {
+            wantLocation = true
+            city.text = "New York"
+            zeeLoader.showView(true)
+            viewpager.showView(false)
+            getCurrent("40.6643", "-73.9385")
+            alert.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.paris).setOnClickListener {
+            wantLocation = true
+            city.text = "Paris"
+            zeeLoader.showView(true)
+            viewpager.showView(false)
+            getCurrent("48.8032", "2.3511")
+            alert.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.current).setOnClickListener {
+            wantLocation = true
+            city.text = "Current City"
+            zeeLoader.showView(true)
+            viewpager.showView(false)
+            toggleUpdates()
+            alert.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.cancel).setOnClickListener {
+            alert.dismiss()
+        }
     }
 
     private fun checkLocation(): Boolean {
@@ -284,7 +330,11 @@ class MainFragment : BaseFragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {

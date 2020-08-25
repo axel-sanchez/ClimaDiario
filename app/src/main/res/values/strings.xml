@@ -1,11 +1,3 @@
 <resources>
     <string name="app_name">ClimaDiario</string>
-    <string-array name="cities">
-        <item>Current City</item>
-        <item>Madrid</item>
-        <item>London</item>
-        <item>New York</item>
-        <item>Paris</item>
-        <item>Singapur</item>
-    </string-array>
 </resources>

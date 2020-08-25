@@ -3,7 +3,7 @@ package com.example.climadiario.ui.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
-class ViewPageAdapter(fm: FragmentManager, private val items: List<ItemViewPager>) : androidx.fragment.app.FragmentPagerAdapter(fm) {
+class ViewPageAdapter(fm: FragmentManager, private var items: List<ItemViewPager>) : androidx.fragment.app.FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return items[position].fragment
@@ -17,6 +17,10 @@ class ViewPageAdapter(fm: FragmentManager, private val items: List<ItemViewPager
     override fun getPageTitle(position: Int): CharSequence? {
         // Generate title based on item position
         return items[position].title
+    }
+
+    fun updateItems(items: List<ItemViewPager>){
+        this.items = items
     }
 }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import com.example.climadiario.R
 import com.example.climadiario.data.models.Day
 import com.example.climadiario.ui.view.customs.BaseFragment
@@ -14,7 +15,7 @@ const val ARG_POS = "pos"
 class WeatherFragment: BaseFragment() {
 
     private var position = 0
-    lateinit var dias: MutableList<Day>
+    //lateinit var dias: MutableList<Day>
 
     override fun onBackPressFragment() = false
 
@@ -61,13 +62,14 @@ class WeatherFragment: BaseFragment() {
     }
 
     companion object {
+        var dias: MutableList<Day> = mutableListOf()
         @JvmStatic
-        fun newInstance(position: Int, ciudades: MutableList<Day>) =
+        fun newInstance(position: Int) =//, dias: MutableList<Day>) =
             WeatherFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_POS, position)
                 }
-                this.dias = ciudades
+                //this.dias = dias
             }
     }
 }
