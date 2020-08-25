@@ -13,7 +13,6 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,7 @@ import com.example.climadiario.data.models.Base
 import com.example.climadiario.data.models.Clima
 import com.example.climadiario.data.models.Daily
 import com.example.climadiario.data.models.Day
+import com.example.climadiario.helpers.DateHelper
 import com.example.climadiario.ui.view.adapter.ItemViewPager
 import com.example.climadiario.ui.view.adapter.ViewPageAdapter
 import com.example.climadiario.ui.view.customs.BaseFragment
@@ -41,13 +41,13 @@ import java.util.*
 import kotlin.math.roundToInt
 
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 5254
-private const val END_POINT = "https://api.openweathermap.org/data/2.5/"
-private const val API_ID = "3cfc1d5c1a8a4e9709fd07398c77d1af"
+const val END_POINT = "https://api.openweathermap.org/data/2.5/"
+const val API_ID = "3cfc1d5c1a8a4e9709fd07398c77d1af"
 
 @RequiresApi(Build.VERSION_CODES.N)
 class MainFragment : BaseFragment() {
 
-    private lateinit var service: ApiService
+    private var service: ApiService
 
     private lateinit var locationManager: LocationManager
     private var latitude: Double = 0.0
@@ -58,6 +58,8 @@ class MainFragment : BaseFragment() {
     private lateinit var zeeLoader: ZeeLoader
 
     private var wantLocation = true
+
+    private val dias = arrayOf("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo")
 
     private val locationListener: LocationListener = object : LocationListener {
         @SuppressLint("SetTextI18n")
@@ -75,23 +77,16 @@ class MainFragment : BaseFragment() {
 
     override fun onBackPressFragment() = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    init {
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(END_POINT)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         service = retrofit.create(ApiService::class.java)
-
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
@@ -103,28 +98,17 @@ class MainFragment : BaseFragment() {
         change = view.findViewById(R.id.change)
         zeeLoader = view.findViewById(R.id.zeeLoader)
 
-        locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         toggleUpdates()
     }
 
-    private fun getWeather(lat: String, lon: String) {
+    fun getWeather(lat: String, lon: String) {
         service.getWeather(lat, lon, API_ID, "metric").enqueue(object : Callback<Clima> {
             override fun onResponse(call: Call<Clima>, response: Response<Clima>) {
                 if (response.isSuccessful) {
                     println("body token: ${response.body()}")
 
                     zeeLoader.showView(false)
-                    /*txtWeather.text = (response.body()!!.main.temp.roundToInt()).toString()
-                    txtWeather.showView(true)
-                    txtMetric.showView(true)
-                    viento.showView(true)
-                    cities.showView(true)
-                    wordViento.showView(true)
-                    description.showView(true)*/
-
-                    //cities.text = response.body()!!.name
-                    /*viento.text = "${response.body()!!.wind.speed} km/h"
-                    description.text = response.body()!!.weather.first().main*/
                 } else {
                     println("response token: $response")
                 }
@@ -136,14 +120,12 @@ class MainFragment : BaseFragment() {
         })
     }
 
-    private fun getCurrent(lat: String, lon: String) {
+    fun getCurrent(lat: String, lon: String){
         service.getCurrent(lat, lon, "metric", API_ID).enqueue(object : Callback<Base> {
             override fun onResponse(call: Call<Base>, response: Response<Base>) {
                 if (response.isSuccessful) {
                     wantLocation = false
                     println("body token: ${response.body()}")
-
-                    Log.i("Petición", "llegó")
 
                     zeeLoader.showView(false)
                     viewpager.showView(true)
@@ -162,19 +144,17 @@ class MainFragment : BaseFragment() {
         })
     }
 
-    private fun updateViewPager(listDays: List<Daily>) {
+    fun updateViewPager(listDays: List<Daily>) {
 
         city.setOnClickListener { openDialog() }
         change.setOnClickListener { openDialog() }
 
         var listadoDays = mutableListOf<Day>()
 
-        val c = Calendar.getInstance()
-        var day = c.time.day
-        var numberDay = c.time.date
-        var mes = c.time.month + 1
-
-        var dias = arrayOf("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo")
+        val calendar = Calendar.getInstance()
+        var day = calendar.time.day
+        var numberDay = calendar.time.date
+        var mes = calendar.time.month + 1
 
         for (i in 0 until (6)) {
             listadoDays.add(
@@ -187,7 +167,9 @@ class MainFragment : BaseFragment() {
                     listDays[i].weather!!.first().main.toString()
                 )
             )
-            numberDay++ //TODO: Debería validar que no se pase del límite del mes
+            var diaYMes = DateHelper.nextDay(numberDay,mes)
+            numberDay = diaYMes.first()
+            mes = diaYMes.last()
             if (day == 7) day = 1
             else day++
         }
@@ -200,19 +182,17 @@ class MainFragment : BaseFragment() {
             listado.add(
                 ItemViewPager(
                     "cancion $i",
-                    WeatherFragment.newInstance(i)//, listadoCity)
+                    WeatherFragment.newInstance(i)
                 )
             )
         }
         val adapter = ViewPageAdapter(childFragmentManager, listado)
         viewpager.adapter = adapter
 
-        //(viewpager.adapter as ViewPageAdapter).updateItems(listado)
-
         viewpager.pageMargin = -64
     }
 
-    private fun openDialog() {
+    fun openDialog() {
         val dialogBuilder = AlertDialog.Builder(this.requireContext())
         val inflater = this.layoutInflater
         val dialogView = inflater.inflate(R.layout.dialog_cities, null)
@@ -288,7 +268,7 @@ class MainFragment : BaseFragment() {
     }
 
     private fun showAlert() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(context!!)
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         dialog.setTitle("Enable Location")
             .setMessage("Su ubicación esta desactivada.\npor favor active su ubicación usa esta app")
             .setPositiveButton("Configuración de ubicación") { _, _ ->
@@ -309,7 +289,7 @@ class MainFragment : BaseFragment() {
         if (!checkLocation()) return
 
         if (ActivityCompat.checkSelfPermission(
-                context!!,
+                requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -330,11 +310,7 @@ class MainFragment : BaseFragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
@@ -344,7 +320,7 @@ class MainFragment : BaseFragment() {
 
                     // permission was granted
                     if (ActivityCompat.checkSelfPermission(
-                            context!!,
+                            requireContext(),
                             Manifest.permission.ACCESS_FINE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED
                     ) {

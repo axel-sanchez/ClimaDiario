@@ -59,5 +59,4 @@ class MainActivity: AppCompatActivity(), INavigationHost {
             super.onBackPressed()
         }
     }
-
 }

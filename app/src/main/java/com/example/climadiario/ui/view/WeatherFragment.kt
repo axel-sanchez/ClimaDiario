@@ -12,10 +12,9 @@ import kotlinx.android.synthetic.main.fragment_weather.*
 
 const val ARG_POS = "pos"
 
-class WeatherFragment: BaseFragment() {
+class WeatherFragment : BaseFragment() {
 
     private var position = 0
-    //lateinit var dias: MutableList<Day>
 
     override fun onBackPressFragment() = false
 
@@ -27,8 +26,10 @@ class WeatherFragment: BaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_weather, container, false)
@@ -40,9 +41,14 @@ class WeatherFragment: BaseFragment() {
         viento.text = "${dias[position].viento} km/h"
         txtWeather.text = dias[position].temperatura
         description.text = dias[position].descripcion
-        day.text = dias[position].nombre
 
-        var mesString = when(dias[position].mes){
+        when (position) {
+            0 -> day.text = "Hoy"
+            1 -> day.text = "Mañana"
+            else -> day.text = dias[position].nombre
+        }
+
+        var mesString = when (dias[position].mes) {
             1 -> "Enero"
             2 -> "Febrero"
             3 -> "Marzo"
@@ -63,13 +69,13 @@ class WeatherFragment: BaseFragment() {
 
     companion object {
         var dias: MutableList<Day> = mutableListOf()
+
         @JvmStatic
         fun newInstance(position: Int) =//, dias: MutableList<Day>) =
             WeatherFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_POS, position)
                 }
-                //this.dias = dias
             }
     }
 }

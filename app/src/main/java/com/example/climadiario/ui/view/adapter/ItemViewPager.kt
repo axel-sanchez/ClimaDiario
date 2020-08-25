@@ -18,10 +18,6 @@ class ViewPageAdapter(fm: FragmentManager, private var items: List<ItemViewPager
         // Generate title based on item position
         return items[position].title
     }
-
-    fun updateItems(items: List<ItemViewPager>){
-        this.items = items
-    }
 }
 
 class ItemViewPager(val title : String, val fragment: Fragment)
