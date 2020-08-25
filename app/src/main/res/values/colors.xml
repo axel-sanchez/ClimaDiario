@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#252425</color>
+    <color name="colorPrimaryDark">#D50000</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorBrown">#353333</color>
+    <color name="green_text_color_transparent">#7C0A0A0A</color>
+
+    <color name="gray_button">#606060</color>
+    <color name="white">#ffffff</color>
+    <color name="green">#285E05</color>
+</resources>
