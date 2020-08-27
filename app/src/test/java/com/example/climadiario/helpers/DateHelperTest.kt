@@ -14,11 +14,11 @@ class DateHelperTest {
         assertEquals(listOf(1, 3), DateHelper.nextDay(28, 2))
     }
 
-    @Test fun nextDay1demayo() {
+    @Test fun nextDay1dejunio() {
         assertEquals(listOf(1, 6), DateHelper.nextDay(31, 5))
     }
 
-    @Test fun nextDay1denoviembre() {
+    @Test fun nextDay1dediciembre() {
         assertEquals(listOf(1, 12), DateHelper.nextDay(30, 11))
     }
 
