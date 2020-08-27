@@ -1,12 +1,10 @@
-package com.example.climadiario.data.models
+package com.example.climadiario.data.service
 
 import androidx.lifecycle.MutableLiveData
+import com.example.climadiario.data.models.Base
 import com.example.climadiario.ui.API_ID
 import com.example.climadiario.ui.END_POINT
 import com.example.climadiario.ui.interfaces.ApiService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

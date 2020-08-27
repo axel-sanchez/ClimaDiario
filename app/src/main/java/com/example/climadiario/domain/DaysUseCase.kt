@@ -1,10 +1,9 @@
 package com.example.climadiario.domain
 
-import com.example.climadiario.data.models.ConnectToApi
+import com.example.climadiario.data.service.ConnectToApi
 import com.example.climadiario.data.models.Daily
 import com.example.climadiario.data.models.Day
 import com.example.climadiario.helpers.DateHelper
-import java.lang.Exception
 import java.util.*
 import kotlin.math.roundToInt
 
