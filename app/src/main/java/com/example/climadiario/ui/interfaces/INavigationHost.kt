@@ -1,4 +1,4 @@
-package com.example.climadiario.ui.view.interfaces
+package com.example.climadiario.ui.interfaces
 
 import androidx.fragment.app.Fragment
 

@@ -1,9 +1,8 @@
-package com.example.climadiario.ui.view.customs
+package com.example.climadiario.ui.customs
 
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import com.example.climadiario.ui.view.interfaces.IOnBackPressFragment
+import com.example.climadiario.ui.interfaces.IOnBackPressFragment
 
 abstract class BaseFragment : Fragment() , IOnBackPressFragment {
     //EXTENSION FUNCTIONS

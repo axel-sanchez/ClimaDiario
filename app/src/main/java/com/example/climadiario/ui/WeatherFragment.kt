@@ -1,13 +1,12 @@
-package com.example.climadiario.ui.view
+package com.example.climadiario.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import com.example.climadiario.R
 import com.example.climadiario.data.models.Day
-import com.example.climadiario.ui.view.customs.BaseFragment
+import com.example.climadiario.ui.customs.BaseFragment
 import kotlinx.android.synthetic.main.fragment_weather.*
 
 const val ARG_POS = "pos"
@@ -39,8 +38,8 @@ class WeatherFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viento.text = "${dias[position].viento} km/h"
-        txtWeather.text = dias[position].temperatura
         description.text = dias[position].descripcion
+        txtWeather.text = dias[position].temperatura
 
         when (position) {
             0 -> day.text = "Hoy"
@@ -68,7 +67,7 @@ class WeatherFragment : BaseFragment() {
     }
 
     companion object {
-        var dias: MutableList<Day> = mutableListOf()
+        var dias: List<Day> = mutableListOf()
 
         @JvmStatic
         fun newInstance(position: Int) =//, dias: MutableList<Day>) =

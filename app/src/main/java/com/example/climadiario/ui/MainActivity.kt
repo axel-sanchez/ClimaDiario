@@ -1,4 +1,4 @@
-package com.example.climadiario.ui.view
+package com.example.climadiario.ui
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.climadiario.R
-import com.example.climadiario.ui.view.customs.BaseFragment
-import com.example.climadiario.ui.view.interfaces.INavigationHost
+import com.example.climadiario.ui.customs.BaseFragment
+import com.example.climadiario.ui.interfaces.INavigationHost
 
 class MainActivity: AppCompatActivity(), INavigationHost {
 
