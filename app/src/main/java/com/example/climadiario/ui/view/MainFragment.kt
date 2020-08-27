@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import com.agrawalsuneet.dotsloader.loaders.ZeeLoader
 import com.example.climadiario.R
 import com.example.climadiario.data.models.Base
-import com.example.climadiario.data.models.Clima
 import com.example.climadiario.data.models.Daily
 import com.example.climadiario.data.models.Day
 import com.example.climadiario.helpers.DateHelper
@@ -100,24 +99,6 @@ class MainFragment : BaseFragment() {
 
         locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         toggleUpdates()
-    }
-
-    fun getWeather(lat: String, lon: String) {
-        service.getWeather(lat, lon, API_ID, "metric").enqueue(object : Callback<Clima> {
-            override fun onResponse(call: Call<Clima>, response: Response<Clima>) {
-                if (response.isSuccessful) {
-                    println("body token: ${response.body()}")
-
-                    zeeLoader.showView(false)
-                } else {
-                    println("response token: $response")
-                }
-            }
-
-            override fun onFailure(call: Call<Clima>, t: Throwable) {
-                println("el error es el siguiente ${t.message}")
-            }
-        })
     }
 
     fun getCurrent(lat: String, lon: String){
