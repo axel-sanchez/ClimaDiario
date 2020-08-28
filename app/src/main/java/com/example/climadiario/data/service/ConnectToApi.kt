@@ -29,7 +29,11 @@ class ConnectToApi {
      */
     suspend fun getWeather(lat: String, lon: String): MutableLiveData<Base> {
         var mutableLiveData = MutableLiveData<Base>()
-        mutableLiveData.value = service.getWeather(lat, lon, "metric", API_ID)//.enqueue(object: Callback<Base>{
+        try{
+            mutableLiveData.value = service.getWeather(lat, lon, "metric", API_ID)
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
         return mutableLiveData
     }
 
