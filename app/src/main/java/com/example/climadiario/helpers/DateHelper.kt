@@ -1,6 +1,16 @@
 package com.example.climadiario.helpers
 
+/**
+ * Este es un objeto que contiene funciones que ayudan a realizar acciones con la fecha
+ * @author Axel Sanchez
+ */
 object DateHelper{
+    /**
+     * Esta función sirve para obtener el día siguiente y su mes correspondiente
+     * @param [numberDay] es el número del día de la fecha
+     * @param [mes] es el mes de la fecha
+     * @return devuelve una lista de enteros, el primer elemento es el siguiente día y el segundo elemento es su mes correspondiente
+     */
     fun nextDay(numberDay: Int, mes: Int): List<Int>{
         when(mes){
             1,3,5,7,8,10 -> {

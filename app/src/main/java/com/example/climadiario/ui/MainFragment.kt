@@ -41,6 +41,10 @@ private const val MY_PERMISSIONS_REQUEST_LOCATION = 5254
 const val END_POINT = "https://api.openweathermap.org/data/2.5/"
 const val API_ID = "3cfc1d5c1a8a4e9709fd07398c77d1af"
 
+/**
+ * Primer fragment que se inicializa en el activity principal de la aplicación
+ * @author Axel Sanchez
+ */
 @RequiresApi(Build.VERSION_CODES.N)
 class MainFragment : BaseFragment() {
 
@@ -52,6 +56,7 @@ class MainFragment : BaseFragment() {
     private lateinit var change: TextView
     private lateinit var zeeLoader: ZeeLoader
 
+    /**Se utiliza para que solo se pida la ubicación cuando quiera el desarrollador*/
     private var wantLocation = true
 
     private lateinit var viewModel: DayViewModel
@@ -83,11 +88,7 @@ class MainFragment : BaseFragment() {
 
     override fun onBackPressFragment() = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
@@ -99,11 +100,13 @@ class MainFragment : BaseFragment() {
         change = view.findViewById(R.id.change)
         zeeLoader = view.findViewById(R.id.zeeLoader)
 
-        locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         toggleUpdates()
     }
 
+    /**
+     * Configuramos el viewModel para estar a la escucha de nuestra petición a la api del clima
+     */
     private fun setupViewModelAndObserve() {
         val daysObserver = Observer<List<Day>> {
             zeeLoader.showView(false)
@@ -131,6 +134,9 @@ class MainFragment : BaseFragment() {
         viewModel.getListDaysLiveData().observe(this, daysObserver)
     }
 
+    /**
+     * Muestro un dialogo para que el usuario pueda seleccionar la ubicación que más le interese
+     */
     private fun openDialog() {
         val dialogBuilder = AlertDialog.Builder(this.requireContext())
         val inflater = this.layoutInflater
@@ -249,11 +255,7 @@ class MainFragment : BaseFragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {

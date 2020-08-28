@@ -37,17 +37,17 @@ class WeatherFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viento.text = "${dias[position].viento} km/h"
-        description.text = dias[position].descripcion
-        txtWeather.text = dias[position].temperatura
+        viento.text = "${dias[position].wind} km/h"
+        description.text = dias[position].description
+        txtWeather.text = dias[position].temperature
 
         when (position) {
             0 -> day.text = "Hoy"
             1 -> day.text = "Mañana"
-            else -> day.text = dias[position].nombre
+            else -> day.text = dias[position].name
         }
 
-        var mesString = when (dias[position].mes) {
+        var mesString = when (dias[position].month) {
             1 -> "Enero"
             2 -> "Febrero"
             3 -> "Marzo"
@@ -63,7 +63,7 @@ class WeatherFragment : BaseFragment() {
             else -> "No existe el mes"
         }
 
-        date.text = "${dias[position].numero} de $mesString"
+        date.text = "${dias[position].number} de $mesString"
     }
 
     companion object {

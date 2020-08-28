@@ -9,6 +9,10 @@ import com.example.climadiario.R
 import com.example.climadiario.ui.customs.BaseFragment
 import com.example.climadiario.ui.interfaces.INavigationHost
 
+/**
+ * Activity principal de nuestra aplicación
+ * @author Axel Sanchez
+ */
 class MainActivity: AppCompatActivity(), INavigationHost {
 
     @RequiresApi(Build.VERSION_CODES.N)

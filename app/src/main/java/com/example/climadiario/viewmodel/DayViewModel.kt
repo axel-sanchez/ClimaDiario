@@ -6,16 +6,19 @@ import androidx.lifecycle.ViewModel
 import com.example.climadiario.data.models.Day
 import com.example.climadiario.domain.DaysUseCase
 
-class DayViewModel(private val daysUseCase: DaysUseCase): ViewModel() {
+/**
+ * View model de [WeatherFragment]
+ * @author Axel Sanchez
+ */
+class DayViewModel(private val daysUseCase: DaysUseCase) : ViewModel() {
 
     private val listData = MutableLiveData<List<Day>>()
 
-    private fun setListData(listaDays: List<Day>){
+    private fun setListData(listaDays: List<Day>) {
         listData.value = listaDays
     }
 
-    //Podemos usar corutinas para pedir informacion que sea asyncrona
-    suspend fun getListDays(lat: String, lon: String){
+    suspend fun getListDays(lat: String, lon: String) {
         setListData(daysUseCase.getDaysList(lat, lon))
     }
 

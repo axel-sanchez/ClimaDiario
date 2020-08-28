@@ -8,6 +8,10 @@ import com.example.climadiario.ui.interfaces.ApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Esta clase es la encargada de conectarse a las api's
+ * @author Axel Sanchez
+ */
 class ConnectToApi {
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(END_POINT)
@@ -16,7 +20,13 @@ class ConnectToApi {
 
     var service: ApiService = retrofit.create(ApiService::class.java)
 
-
+    /**
+     * Esta función es la encargada de retornar el clima de hoy y los 5 días siguientes
+     * @param [lat] recibe la latitud de la ubicación
+     * @param [lon] recibe la longitud de la ubicación
+     * @return devuelve un mutableLiveData de la Base que es el objeto que mapea la respuesta
+     * @sample getWeather("1.28967", "103.85007")
+     */
     suspend fun getWeather(lat: String, lon: String): MutableLiveData<Base> {
         var mutableLiveData = MutableLiveData<Base>()
         mutableLiveData.value = service.getWeather(lat, lon, "metric", API_ID)//.enqueue(object: Callback<Base>{
@@ -24,6 +34,9 @@ class ConnectToApi {
     }
 
     companion object {
+        /**
+         * Utilizo Singleton para crear solo una instancia de esta clase
+         */
         private var instance: ConnectToApi? = null
 
         fun getInstance(): ConnectToApi {
