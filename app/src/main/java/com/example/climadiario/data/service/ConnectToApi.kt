@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.climadiario.data.models.Base
 import com.example.climadiario.ui.API_ID
 import com.example.climadiario.ui.END_POINT
-import com.example.climadiario.ui.interfaces.ApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -34,11 +33,11 @@ class ConnectToApi {
     }
 
     companion object {
+        private var instance: ConnectToApi? = null
+
         /**
          * Utilizo Singleton para crear solo una instancia de esta clase
          */
-        private var instance: ConnectToApi? = null
-
         fun getInstance(): ConnectToApi {
             if (instance == null) {
                 instance = ConnectToApi()

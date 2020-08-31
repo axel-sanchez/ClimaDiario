@@ -1,4 +1,4 @@
-package com.example.climadiario.ui.interfaces
+package com.example.climadiario.data.service
 
 import com.example.climadiario.data.models.Base
 import retrofit2.Call

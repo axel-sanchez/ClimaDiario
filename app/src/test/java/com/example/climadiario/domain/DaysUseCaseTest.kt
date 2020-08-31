@@ -2,7 +2,7 @@ package com.example.climadiario.domain
 
 import com.example.climadiario.ui.API_ID
 import com.example.climadiario.ui.END_POINT
-import com.example.climadiario.ui.interfaces.ApiService
+import com.example.climadiario.data.service.ApiService
 import org.junit.Test
 
 import org.junit.Assert.*
