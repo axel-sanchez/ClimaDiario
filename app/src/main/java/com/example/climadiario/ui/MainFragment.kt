@@ -34,7 +34,6 @@ import com.example.climadiario.viewmodel.DayViewModel
 import com.example.climadiario.viewmodel.MyViewModelFactory
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.util.*
 
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 5254
@@ -81,8 +80,7 @@ class MainFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity(), MyViewModelFactory(DaysUseCase()))
-            .get(DayViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireActivity(), MyViewModelFactory(DaysUseCase())).get(DayViewModel::class.java)
         setupViewModelAndObserve()
     }
 

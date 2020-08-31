@@ -10,7 +10,7 @@ data class Base(val lat: Number?, val lon: Number?, val timezone: String?, val t
  * @author Axel Sanchez
  * Clase encargada de almacenar el clima actual
  */
-data class Current(val dt: Number?, val sunrise: Number?, val sunset: Number?, val temp: Number?, val feels_like: Number?, val pressure: Number?, val humidity: Number?, val dew_point: Number?, val uvi: Number?, val clouds: Number?, val visibility: Number?, val wind_speed: Number?, val wind_deg: Number?, val weather: List<Weather>?, val rain: Rain?)
+data class Current(val dt: Number?, val sunrise: Number?, val sunset: Number?, val temp: Double?, val feels_like: Number?, val pressure: Number?, val humidity: Number?, val dew_point: Number?, val uvi: Number?, val clouds: Number?, val visibility: Number?, val wind_speed: Number?, val wind_deg: Number?, val weather: List<Weather>?, val rain: Rain?)
 
 /**
  * @author Axel Sanchez

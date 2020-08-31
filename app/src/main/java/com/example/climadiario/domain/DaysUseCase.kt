@@ -4,6 +4,7 @@ import com.example.climadiario.data.service.ConnectToApi
 import com.example.climadiario.data.models.Daily
 import com.example.climadiario.data.models.Day
 import com.example.climadiario.helpers.DateHelper
+import java.lang.Exception
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -13,7 +14,7 @@ import kotlin.math.roundToInt
  */
 class DaysUseCase {
 
-    private val dias = arrayOf("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo")
+    private val dias = arrayOf("Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado")
 
     private val api = ConnectToApi.getInstance()
 
@@ -28,8 +29,14 @@ class DaysUseCase {
         println("body token: ${response!!}")
 
         var listDays = response.daily!!.subList(0, 6)
-
-        var current= response.current!!.temp!!.toFloat().roundToInt().toString()
+        var current = ""
+        try {
+            //current = response.current!!.temp!!.toFloat().roundToInt().toString()
+            current = response.current!!.temp!!.roundToInt().toString()
+            println(current)
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
 
         return dailytoDays(listDays, current)
     }
@@ -53,7 +60,7 @@ class DaysUseCase {
             if(i == 0){
                 listadoDays.add(
                     Day(
-                        dias[day - 1],
+                        dias[day],
                         numberDay.toString(),
                         mes,
                         current,
@@ -64,7 +71,7 @@ class DaysUseCase {
             }else{
                 listadoDays.add(
                     Day(
-                        dias[day - 1],
+                        dias[day],
                         numberDay.toString(),
                         mes,
                         listDays[i].temp!!.day!!.toFloat().roundToInt().toString(),
