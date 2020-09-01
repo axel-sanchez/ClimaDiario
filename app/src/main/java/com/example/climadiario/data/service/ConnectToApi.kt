@@ -11,14 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Esta clase es la encargada de conectarse a las api's
  * @author Axel Sanchez
  */
-class ConnectToApi {
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(END_POINT)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    var service: ApiService = retrofit.create(ApiService::class.java)
-
+class ConnectToApi(private var service: ApiService) {
     /**
      * Esta función es la encargada de retornar el clima de hoy y los 5 días siguientes
      * @param [lat] recibe la latitud de la ubicación
@@ -32,19 +25,5 @@ class ConnectToApi {
         if(response.isSuccessful) mutableLiveData.value = response.body()
         else mutableLiveData.value = null
         return mutableLiveData
-    }
-
-    companion object {
-        private var instance: ConnectToApi? = null
-
-        /**
-         * Utilizo Singleton para crear solo una instancia de esta clase
-         */
-        fun getInstance(): ConnectToApi {
-            if (instance == null) {
-                instance = ConnectToApi()
-            }
-            return instance!!
-        }
     }
 }

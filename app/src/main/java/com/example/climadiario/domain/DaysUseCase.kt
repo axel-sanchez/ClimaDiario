@@ -11,12 +11,10 @@ import kotlin.math.roundToInt
  * Caso de uso para los días
  * @author Axel Sanchez
  */
-class DaysUseCase {
+class DaysUseCase(private var api:ConnectToApi) {
 
     private val dias =
         arrayOf("Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado")
-
-    private val api = ConnectToApi.getInstance()
 
     /**
      * Recibe la [Base] y arma los días para enviarlos al viewModel

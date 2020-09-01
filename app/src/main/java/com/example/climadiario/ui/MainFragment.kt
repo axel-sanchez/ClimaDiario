@@ -26,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import com.agrawalsuneet.dotsloader.loaders.ZeeLoader
 import com.example.climadiario.R
 import com.example.climadiario.data.models.Day
+import com.example.climadiario.data.service.ConnectToApi
 import com.example.climadiario.domain.DaysUseCase
 import com.example.climadiario.ui.adapter.ItemViewPager
 import com.example.climadiario.ui.adapter.ViewPageAdapter
@@ -34,6 +35,7 @@ import com.example.climadiario.viewmodel.DayViewModel
 import com.example.climadiario.viewmodel.MyViewModelFactory
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import java.util.*
 
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 5254
@@ -47,6 +49,8 @@ const val API_ID = "3cfc1d5c1a8a4e9709fd07398c77d1af"
 @RequiresApi(Build.VERSION_CODES.N)
 class MainFragment : BaseFragment() {
 
+    private val viewModelFactory: MyViewModelFactory by inject()
+
     private lateinit var locationManager: LocationManager
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
@@ -58,7 +62,7 @@ class MainFragment : BaseFragment() {
     /**Se utiliza para que solo se pida la ubicación cuando quiera el desarrollador*/
     private var wantLocation = true
 
-    private lateinit var viewModel: DayViewModel
+    private val viewModel: DayViewModel by lazy { ViewModelProviders.of(requireActivity(), viewModelFactory).get(DayViewModel::class.java) }
 
     private val locationListener: LocationListener = object : LocationListener {
         @SuppressLint("SetTextI18n")
@@ -79,7 +83,6 @@ class MainFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity(), MyViewModelFactory(DaysUseCase())).get(DayViewModel::class.java)
         setupViewModelAndObserve()
     }
 
