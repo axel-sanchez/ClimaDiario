@@ -26,9 +26,11 @@ class ConnectToApi {
      * @return devuelve un mutableLiveData de la Base que es el objeto que mapea la respuesta
      * @sample getWeather("1.28967", "103.85007")
      */
-    suspend fun getWeather(lat: String, lon: String): MutableLiveData<Base> {
-        var mutableLiveData = MutableLiveData<Base>()
-        mutableLiveData.value = service.getWeather(lat, lon, "metric", API_ID)
+    suspend fun getWeather(lat: String, lon: String): MutableLiveData<Base?> {
+        var mutableLiveData = MutableLiveData<Base?>()
+        var response = service.getWeather(lat, lon, "metric", API_ID)
+        if(response.isSuccessful) mutableLiveData.value = response.body()
+        else mutableLiveData.value = null
         return mutableLiveData
     }
 

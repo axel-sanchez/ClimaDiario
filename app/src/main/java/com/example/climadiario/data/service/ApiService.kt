@@ -2,6 +2,7 @@ package com.example.climadiario.data.service
 
 import com.example.climadiario.data.models.Base
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 /**
@@ -18,7 +19,7 @@ interface ApiService {
      * @return retorna un objeto [Base]
      */
     @GET("onecall")
-    suspend fun getWeather(@Query("lat") lat: String, @Query("lon") lon: String, @Query("units") units: String, @Query("appid") id: String): Base
+    suspend fun getWeather(@Query("lat") lat: String, @Query("lon") lon: String, @Query("units") units: String, @Query("appid") id: String): Response<Base>
 
     @GET("onecall")
     fun getWeatherTest(@Query("lat") lat: String, @Query("lon") lon: String, @Query("units") units: String, @Query("appid") id: String): Call<Base>

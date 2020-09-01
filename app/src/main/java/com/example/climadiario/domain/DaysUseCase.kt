@@ -4,7 +4,6 @@ import com.example.climadiario.data.service.ConnectToApi
 import com.example.climadiario.data.models.Daily
 import com.example.climadiario.data.models.Day
 import com.example.climadiario.helpers.DateHelper
-import java.lang.Exception
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -14,7 +13,8 @@ import kotlin.math.roundToInt
  */
 class DaysUseCase {
 
-    private val dias = arrayOf("Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado")
+    private val dias =
+        arrayOf("Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado")
 
     private val api = ConnectToApi.getInstance()
 
@@ -26,28 +26,19 @@ class DaysUseCase {
      */
     suspend fun getDaysList(lat: String, lon: String): List<Day> {
         var response = api.getWeather(lat, lon).value
-        println("body token: ${response!!}")
-
-        var listDays = response.daily!!.subList(0, 6)
+        var listDays = response?.let{ it.daily }?.let { it.subList(0, 6) }?: kotlin.run { return dailytoDays(null, "--") }
         var current = ""
-        try {
-            //current = response.current!!.temp!!.toFloat().roundToInt().toString()
-            current = response.current!!.temp!!.roundToInt().toString()
-            println(current)
-        } catch (e: Exception){
-            e.printStackTrace()
-        }
-
+        current = response?.let { it.current }?.let { it.temp }?.let { it.roundToInt().toString() }?: kotlin.run { "" }
         return dailytoDays(listDays, current)
     }
 
     /**
      * Al primer día del listado le reemplazo el clima actual para que sea más preciso
-     * @param [listDays] listado del objeto Daily que recibo de la api
+     * @param [listDailys] listado del objeto Daily que recibo de la api
      * @param [current] un string con la temperatura actual
      * @return listado de días actualizado
      */
-    private fun dailytoDays(listDays: List<Daily>, current: String): MutableList<Day>{
+    private fun dailytoDays(listDailys: List<Daily>?, current: String): MutableList<Day> {
 
         var listadoDays = mutableListOf<Day>()
 
@@ -57,26 +48,26 @@ class DaysUseCase {
         var mes = calendar.time.month + 1
 
         for (i in 0 until (6)) {
-            if(i == 0){
+            if (i == 0) {
                 listadoDays.add(
                     Day(
                         dias[day],
                         numberDay.toString(),
                         mes,
                         current,
-                        listDays[i].wind_speed!!.toFloat().roundToInt().toString(),
-                        listDays[i].weather!!.first().main.toString()
+                        listDailys?.let { it[i] }?.let { it.wind_speed }?.let{ it.toFloat() }?.let{ it.roundToInt().toString() }?: kotlin.run { "--" },
+                        listDailys?.let { it[i] }?.let { it.weather}?.let { it.first() }?.let{ it.main.toString() }?: kotlin.run { "--" }
                     )
                 )
-            }else{
+            } else {
                 listadoDays.add(
                     Day(
                         dias[day],
                         numberDay.toString(),
                         mes,
-                        listDays[i].temp!!.day!!.toFloat().roundToInt().toString(),
-                        listDays[i].wind_speed!!.toFloat().roundToInt().toString(),
-                        listDays[i].weather!!.first().main.toString()
+                        listDailys?.let { it[i] }?.let { it.temp}?.let{ it.day }?.let{ it.toFloat().roundToInt().toString() }?: kotlin.run { "--" },
+                        listDailys?.let { it[i] }?.let { it.wind_speed}?.let{ it.toFloat().roundToInt().toString() }?: kotlin.run { "--" },
+                        listDailys?.let { it[i] }?.let { it.weather}?.let{ it.first() }?.let{ it.main }?: kotlin.run { "--" }
                     )
                 )
             }
@@ -84,7 +75,7 @@ class DaysUseCase {
             var diaYMes = DateHelper.nextDay(numberDay, mes)
             numberDay = diaYMes.first()
             mes = diaYMes.last()
-            if (day == 7) day = 1
+            if (day == 6) day = 0
             else day++
         }
 

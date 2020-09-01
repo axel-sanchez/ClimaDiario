@@ -65,7 +65,6 @@ class MainFragment : BaseFragment() {
         override fun onLocationChanged(location: Location) {
             latitude = location.latitude
             longitude = location.longitude
-            println("latitud $latitude y longitud $longitude")
             if (wantLocation) {
                 lifecycleScope.launch {
                     viewModel.getListDays(latitude.toString(), longitude.toString())
