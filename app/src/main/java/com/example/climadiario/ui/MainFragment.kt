@@ -23,17 +23,14 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
-import com.agrawalsuneet.dotsloader.loaders.ZeeLoader
 import com.example.climadiario.R
 import com.example.climadiario.data.models.Day
-import com.example.climadiario.data.service.ConnectToApi
-import com.example.climadiario.domain.DaysUseCase
+import com.example.climadiario.databinding.FragmentMainBinding
 import com.example.climadiario.ui.adapter.ItemViewPager
 import com.example.climadiario.ui.adapter.ViewPageAdapter
 import com.example.climadiario.ui.customs.BaseFragment
 import com.example.climadiario.viewmodel.DayViewModel
 import com.example.climadiario.viewmodel.MyViewModelFactory
-import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -55,9 +52,8 @@ class MainFragment : BaseFragment() {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
 
-    private lateinit var city: TextView
-    private lateinit var change: TextView
-    private lateinit var zeeLoader: ZeeLoader
+    private var fragmentMainBinding: FragmentMainBinding? = null
+    private val binding get() = fragmentMainBinding!!
 
     /**Se utiliza para que solo se pida la ubicación cuando quiera el desarrollador*/
     private var wantLocation = true
@@ -89,16 +85,21 @@ class MainFragment : BaseFragment() {
     override fun onBackPressFragment() = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        fragmentMainBinding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fragmentMainBinding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        city = view.findViewById(R.id.city)
+        /*city = view.findViewById(R.id.city)
         change = view.findViewById(R.id.change)
-        zeeLoader = view.findViewById(R.id.zeeLoader)
+        zeeLoader = view.findViewById(R.id.zeeLoader)*/
 
         locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         toggleUpdates()
@@ -109,11 +110,11 @@ class MainFragment : BaseFragment() {
      */
     private fun setupViewModelAndObserve() {
         val daysObserver = Observer<List<Day>> {
-            zeeLoader.showView(false)
-            viewpager.showView(true)
+            binding.zeeLoader.showView(false)
+            binding.viewpager.showView(true)
             WeatherFragment.dias = it
-            city.setOnClickListener { openDialog() }
-            change.setOnClickListener { openDialog() }
+            binding.city.setOnClickListener { openDialog() }
+            binding.change.setOnClickListener { openDialog() }
 
             val listado: MutableList<ItemViewPager> = LinkedList()
 
@@ -126,9 +127,9 @@ class MainFragment : BaseFragment() {
                 )
             }
             val adapter = ViewPageAdapter(childFragmentManager, listado)
-            viewpager.adapter = adapter
+            binding.viewpager.adapter = adapter
 
-            viewpager.pageMargin = -64
+            binding.viewpager.pageMargin = -64
 
         }
         viewModel.getListDaysLiveData().observe(this, daysObserver)
@@ -149,54 +150,54 @@ class MainFragment : BaseFragment() {
 
         dialogView.findViewById<Button>(R.id.singapur).setOnClickListener {
             wantLocation = true
-            city.text = "Singapur"
-            zeeLoader.showView(true)
-            viewpager.showView(false)
+            binding.city.text = "Singapur"
+            binding.zeeLoader.showView(true)
+            binding.viewpager.showView(false)
             lifecycleScope.launch { viewModel.getListDays("1.28967", "103.85007") }
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.london).setOnClickListener {
             wantLocation = true
-            city.text = "London"
-            zeeLoader.showView(true)
-            viewpager.showView(false)
+            binding.city.text = "London"
+            binding.zeeLoader.showView(true)
+            binding.viewpager.showView(false)
             lifecycleScope.launch { viewModel.getListDays("51.5072", "-0.1275") }
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.madrid).setOnClickListener {
             wantLocation = true
-            city.text = "Madrid"
-            zeeLoader.showView(true)
-            viewpager.showView(false)
+            binding.city.text = "Madrid"
+            binding.zeeLoader.showView(true)
+            binding.viewpager.showView(false)
             lifecycleScope.launch { viewModel.getListDays("40.4167", "-3.70325") }
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.new_york).setOnClickListener {
             wantLocation = true
-            city.text = "New York"
-            zeeLoader.showView(true)
-            viewpager.showView(false)
+            binding.city.text = "New York"
+            binding.zeeLoader.showView(true)
+            binding.viewpager.showView(false)
             lifecycleScope.launch { viewModel.getListDays("40.6643", "-73.9385") }
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.paris).setOnClickListener {
             wantLocation = true
-            city.text = "Paris"
-            zeeLoader.showView(true)
-            viewpager.showView(false)
+            binding.city.text = "Paris"
+            binding.zeeLoader.showView(true)
+            binding.viewpager.showView(false)
             lifecycleScope.launch { viewModel.getListDays("48.8032", "2.3511") }
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.current).setOnClickListener {
             wantLocation = true
-            city.text = "Current City"
-            zeeLoader.showView(true)
-            viewpager.showView(false)
+            binding.city.text = "Current City"
+            binding.zeeLoader.showView(true)
+            binding.viewpager.showView(false)
             toggleUpdates()
             alert.dismiss()
         }
@@ -284,6 +285,5 @@ class MainFragment : BaseFragment() {
                 return
             }
         }
-
     }
 }

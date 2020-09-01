@@ -1,17 +1,22 @@
 package com.example.climadiario.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.climadiario.R
 import com.example.climadiario.data.models.Day
+import com.example.climadiario.databinding.FragmentMainBinding
+import com.example.climadiario.databinding.FragmentWeatherBinding
 import com.example.climadiario.ui.customs.BaseFragment
-import kotlinx.android.synthetic.main.fragment_weather.*
 
 const val ARG_POS = "pos"
 
 class WeatherFragment : BaseFragment() {
+
+    private var fragmentMainBinding: FragmentWeatherBinding? = null
+    private val binding get() = fragmentMainBinding!!
 
     private var position = 0
 
@@ -26,21 +31,27 @@ class WeatherFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_weather, container, false)
+        fragmentMainBinding = FragmentWeatherBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fragmentMainBinding = null
+    }
+
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viento.text = "${dias[position].wind} km/h"
-        description.text = dias[position].description
-        txtWeather.text = dias[position].temperature
+        binding.viento.text = "${dias[position].wind} km/h"
+        binding.description.text = dias[position].description
+        binding.txtWeather.text = dias[position].temperature
 
         when (position) {
-            0 -> day.text = "Hoy"
-            1 -> day.text = "Mañana"
-            else -> day.text = dias[position].name
+            0 -> binding.day.text = "Hoy"
+            1 -> binding.day.text = "Mañana"
+            else -> binding.day.text = dias[position].name
         }
 
         var mesString = when (dias[position].month) {
@@ -59,14 +70,14 @@ class WeatherFragment : BaseFragment() {
             else -> "No existe el mes"
         }
 
-        date.text = "${dias[position].number} de $mesString"
+        binding.date.text = "${dias[position].number} de $mesString"
     }
 
     companion object {
         var dias: List<Day> = mutableListOf()
 
         @JvmStatic
-        fun newInstance(position: Int) =//, dias: MutableList<Day>) =
+        fun newInstance(position: Int) =
             WeatherFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_POS, position)
