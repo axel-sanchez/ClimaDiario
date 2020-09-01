@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.climadiario.R
 import com.example.climadiario.data.models.Day
-import com.example.climadiario.databinding.FragmentMainBinding
 import com.example.climadiario.databinding.FragmentWeatherBinding
 import com.example.climadiario.ui.customs.BaseFragment
 
