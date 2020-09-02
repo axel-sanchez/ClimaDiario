@@ -52,9 +52,6 @@ class MainFragment : BaseFragment() {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
 
-    private var fragmentMainBinding: FragmentMainBinding? = null
-    private val binding get() = fragmentMainBinding!!
-
     /**Se utiliza para que solo se pida la ubicación cuando quiera el desarrollador*/
     private var wantLocation = true
 
@@ -83,6 +80,9 @@ class MainFragment : BaseFragment() {
     }
 
     override fun onBackPressFragment() = false
+
+    private var fragmentMainBinding: FragmentMainBinding? = null
+    private val binding get() = fragmentMainBinding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentMainBinding = FragmentMainBinding.inflate(inflater, container, false)
