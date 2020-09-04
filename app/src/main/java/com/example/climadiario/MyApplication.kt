@@ -1,6 +1,7 @@
 package com.example.climadiario
 
 import android.app.Application
+import android.widget.Toast
 import com.example.climadiario.data.service.ConnectToApi
 import com.example.climadiario.di.moduleApp
 import org.koin.android.ext.android.inject

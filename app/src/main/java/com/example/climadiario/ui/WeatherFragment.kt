@@ -12,10 +12,6 @@ import com.example.climadiario.ui.customs.BaseFragment
 const val ARG_POS = "pos"
 
 class WeatherFragment : BaseFragment() {
-
-    private var fragmentMainBinding: FragmentWeatherBinding? = null
-    private val binding get() = fragmentMainBinding!!
-
     private var position = 0
 
     override fun onBackPressFragment() = false
@@ -27,6 +23,9 @@ class WeatherFragment : BaseFragment() {
             position = it.getInt(ARG_POS)
         }
     }
+
+    private var fragmentMainBinding: FragmentWeatherBinding? = null
+    private val binding get() = fragmentMainBinding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentMainBinding = FragmentWeatherBinding.inflate(inflater, container, false)

@@ -97,10 +97,6 @@ class MainFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*city = view.findViewById(R.id.city)
-        change = view.findViewById(R.id.change)
-        zeeLoader = view.findViewById(R.id.zeeLoader)*/
-
         locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         toggleUpdates()
     }
