@@ -1,7 +1,6 @@
 package com.example.climadiario.helpers
 
 import org.junit.Test
-
 import org.junit.Assert.*
 
 class DateHelperTest {

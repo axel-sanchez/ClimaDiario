@@ -96,7 +96,6 @@ class MainFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         toggleUpdates()
     }
