@@ -24,7 +24,7 @@ class DaysUseCaseTest {
     }
 
     @Test
-    fun getSingapur() {
+    fun getSingapore() {
         assertTrue(service.getWeatherTest("1.28967", "103.85007", "metric", API_ID).execute().isSuccessful)
     }
 
@@ -44,12 +44,12 @@ class DaysUseCaseTest {
     }
 
     @Test
-    fun forzarErrorConLetras() {
+    fun forceErrorWithLetters() {
         assertFalse(service.getWeatherTest("lat", "lon", "metric", API_ID).execute().isSuccessful)
     }
 
     @Test
-    fun forzarErrorConNumeros() {
+    fun forceErrorWithNumbers() {
         assertFalse(service.getWeatherTest("-2", "-300000000000000000000000000000000000000000000", "metric", API_ID).execute().isSuccessful)
     }
 }

@@ -13,32 +13,19 @@ import kotlin.math.roundToInt
  */
 class DaysUseCase(private var api:ConnectToApi) {
 
-    private val dias =
-        arrayOf("Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado")
+    private val days = arrayOf("Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado")
 
-    /**
-     * Recibe la [Base] y arma los días para enviarlos al viewModel
-     * @param [lat] latitud de la ubicación
-     * @param [lon] longitud de la ubicación
-     * @return devuelve un listado de dias
-     */
-    suspend fun getDaysList(lat: String, lon: String): List<Day> {
+    suspend fun getDaysWeatherList(lat: String, lon: String): List<Day> {
         var response = api.getWeather(lat, lon).value
-        var listDays = response?.let{ it.daily }?.let { it.subList(0, 6) }?: kotlin.run { return dailytoDays(null, "--") }
+        var listDays = response?.let{ it.daily }?.let { it.subList(0, 6) }?: kotlin.run { return dailyListToDaysList(null, "--") }
         var current = ""
         current = response?.let { it.current }?.let { it.temp }?.let { it.roundToInt().toString() }?: kotlin.run { "" }
-        return dailytoDays(listDays, current)
+        return dailyListToDaysList(listDays, current)
     }
 
-    /**
-     * Al primer día del listado le reemplazo el clima actual para que sea más preciso
-     * @param [listDailys] listado del objeto Daily que recibo de la api
-     * @param [current] un string con la temperatura actual
-     * @return listado de días actualizado
-     */
-    private fun dailytoDays(listDailys: List<Daily>?, current: String): MutableList<Day> {
+    private fun dailyListToDaysList(dailyList: List<Daily>?, current: String): MutableList<Day> {
 
-        var listadoDays = mutableListOf<Day>()
+        var daysList = mutableListOf<Day>()
 
         val calendar = Calendar.getInstance()
         var day = calendar.time.day
@@ -47,25 +34,25 @@ class DaysUseCase(private var api:ConnectToApi) {
 
         for (i in 0 until (6)) {
             if (i == 0) {
-                listadoDays.add(
+                daysList.add(
                     Day(
-                        dias[day],
+                        days[day],
                         numberDay.toString(),
                         mes,
                         current,
-                        listDailys?.let { it[i] }?.let { it.wind_speed }?.let{ it.toFloat() }?.let{ it.roundToInt().toString() }?: kotlin.run { "--" },
-                        listDailys?.let { it[i] }?.let { it.weather}?.let { it.first() }?.let{ it.main.toString() }?: kotlin.run { "--" }
+                        dailyList?.let { it[i] }?.let { it.wind_speed }?.let{ it.toFloat() }?.let{ it.roundToInt().toString() }?: kotlin.run { "--" },
+                        dailyList?.let { it[i] }?.let { it.weather}?.let { it.first() }?.let{ it.main.toString() }?: kotlin.run { "--" }
                     )
                 )
             } else {
-                listadoDays.add(
+                daysList.add(
                     Day(
-                        dias[day],
+                        days[day],
                         numberDay.toString(),
                         mes,
-                        listDailys?.let { it[i] }?.let { it.temp}?.let{ it.day }?.let{ it.toFloat().roundToInt().toString() }?: kotlin.run { "--" },
-                        listDailys?.let { it[i] }?.let { it.wind_speed}?.let{ it.toFloat().roundToInt().toString() }?: kotlin.run { "--" },
-                        listDailys?.let { it[i] }?.let { it.weather}?.let{ it.first() }?.let{ it.main }?: kotlin.run { "--" }
+                        dailyList?.let { it[i] }?.let { it.temp}?.let{ it.day }?.let{ it.toFloat().roundToInt().toString() }?: kotlin.run { "--" },
+                        dailyList?.let { it[i] }?.let { it.wind_speed}?.let{ it.toFloat().roundToInt().toString() }?: kotlin.run { "--" },
+                        dailyList?.let { it[i] }?.let { it.weather}?.let{ it.first() }?.let{ it.main }?: kotlin.run { "--" }
                     )
                 )
             }
@@ -77,6 +64,6 @@ class DaysUseCase(private var api:ConnectToApi) {
             else day++
         }
 
-        return listadoDays
+        return daysList
     }
 }

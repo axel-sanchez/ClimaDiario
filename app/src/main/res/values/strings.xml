@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">ClimaDiario</string>
+    <string name="london">London</string>
+    <string name="current_city">Current City</string>
+    <string name="madrid">Madrid</string>
+    <string name="ney_york">Ney York</string>
+    <string name="paris">Paris</string>
+    <string name="singapur">Singapur</string>
+    <string name="cancelar">Cancelar</string>
 </resources>

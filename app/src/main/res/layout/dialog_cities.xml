@@ -26,7 +26,7 @@
                 android:background="@drawable/button_cities"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/white"
-                android:text="Current City"/>
+                android:text="@string/current_city"/>
 
             <Button
                 android:id="@+id/london"
@@ -35,7 +35,7 @@
                 android:background="@drawable/button_cities"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/white"
-                android:text="London"/>
+                android:text="@string/london"/>
 
             <Button
                 android:id="@+id/madrid"
@@ -44,7 +44,7 @@
                 android:background="@drawable/button_cities"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/white"
-                android:text="Madrid"/>
+                android:text="@string/madrid"/>
 
             <Button
                 android:id="@+id/new_york"
@@ -53,7 +53,7 @@
                 android:background="@drawable/button_cities"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/white"
-                android:text="Ney York"/>
+                android:text="@string/ney_york"/>
 
             <Button
                 android:id="@+id/paris"
@@ -62,7 +62,7 @@
                 android:background="@drawable/button_cities"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/white"
-                android:text="Paris"/>
+                android:text="@string/paris"/>
 
             <Button
                 android:id="@+id/singapur"
@@ -71,7 +71,7 @@
                 android:background="@drawable/button_cities"
                 android:textColor="@color/white"
                 android:layout_marginBottom="10dp"
-                android:text="Singapur"/>
+                android:text="@string/singapur"/>
 
             <Button
                 android:id="@+id/cancel"
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_cancelar"
                 android:textColor="#C42F56"
-                android:text="Cancelar"/>
+                android:text="@string/cancelar"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

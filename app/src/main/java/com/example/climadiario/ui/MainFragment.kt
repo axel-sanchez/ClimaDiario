@@ -16,22 +16,21 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.lifecycleScope
 import com.example.climadiario.R
+import com.example.climadiario.common.hide
+import com.example.climadiario.common.show
 import com.example.climadiario.data.models.Day
 import com.example.climadiario.databinding.FragmentMainBinding
 import com.example.climadiario.ui.adapter.ItemViewPager
 import com.example.climadiario.ui.adapter.ViewPageAdapter
-import com.example.climadiario.ui.customs.BaseFragment
 import com.example.climadiario.viewmodel.DayViewModel
-import com.example.climadiario.viewmodel.MyViewModelFactory
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.util.*
 
@@ -39,14 +38,21 @@ private const val MY_PERMISSIONS_REQUEST_LOCATION = 5254
 const val END_POINT = "https://api.openweathermap.org/data/2.5/"
 const val API_ID = "3cfc1d5c1a8a4e9709fd07398c77d1af"
 
+const val SINGAPORE = "Singapur"
+const val LONDON = "London"
+const val MADRID = "Madrid"
+const val PARIS = "Paris"
+const val NEW_YORK = "New York"
+const val CURRENT_CITY = "Current City"
+
 /**
  * Primer fragment que se inicializa en el activity principal de la aplicación
  * @author Axel Sanchez
  */
 @RequiresApi(Build.VERSION_CODES.N)
-class MainFragment : BaseFragment() {
+class MainFragment : Fragment() {
 
-    private val viewModelFactory: MyViewModelFactory by inject()
+    private val viewModelFactory: DayViewModel.MyViewModelFactory by inject()
 
     private lateinit var locationManager: LocationManager
     private var latitude: Double = 0.0
@@ -55,7 +61,9 @@ class MainFragment : BaseFragment() {
     /**Se utiliza para que solo se pida la ubicación cuando quiera el desarrollador*/
     private var wantLocation = true
 
-    private val viewModel: DayViewModel by lazy { ViewModelProviders.of(requireActivity(), viewModelFactory).get(DayViewModel::class.java) }
+    private val viewModel: DayViewModel by lazy {
+        ViewModelProviders.of(requireActivity(), viewModelFactory).get(DayViewModel::class.java)
+    }
 
     private val locationListener: LocationListener = object : LocationListener {
         @SuppressLint("SetTextI18n")
@@ -63,9 +71,7 @@ class MainFragment : BaseFragment() {
             latitude = location.latitude
             longitude = location.longitude
             if (wantLocation) {
-                lifecycleScope.launch {
-                    viewModel.getListDays(latitude.toString(), longitude.toString())
-                }
+                viewModel.getListDays(latitude.toString(), longitude.toString())
             }
         }
 
@@ -79,12 +85,10 @@ class MainFragment : BaseFragment() {
         setupViewModelAndObserve()
     }
 
-    override fun onBackPressFragment() = false
-
     private var fragmentMainBinding: FragmentMainBinding? = null
     private val binding get() = fragmentMainBinding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         fragmentMainBinding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -100,28 +104,25 @@ class MainFragment : BaseFragment() {
         toggleUpdates()
     }
 
-    /**
-     * Configuramos el viewModel para estar a la escucha de nuestra petición a la api del clima
-     */
     private fun setupViewModelAndObserve() {
         val daysObserver = Observer<List<Day>> {
-            binding.zeeLoader.showView(false)
-            binding.viewpager.showView(true)
-            WeatherFragment.dias = it
-            binding.city.setOnClickListener { openDialog() }
-            binding.change.setOnClickListener { openDialog() }
+            binding.zeeLoader.hide()
+            binding.viewpager.show()
+            WeatherFragment.staticDays = it
+            binding.city.setOnClickListener { openDialogWithLocations() }
+            binding.change.setOnClickListener { openDialogWithLocations() }
 
-            val listado: MutableList<ItemViewPager> = LinkedList()
+            val list: MutableList<ItemViewPager> = LinkedList()
 
             for (i in 0 until (6)) {
-                listado.add(
+                list.add(
                     ItemViewPager(
                         "cancion $i",
                         WeatherFragment.newInstance(i)
                     )
                 )
             }
-            val adapter = ViewPageAdapter(childFragmentManager, listado)
+            val adapter = ViewPageAdapter(childFragmentManager, list)
             binding.viewpager.adapter = adapter
 
             binding.viewpager.pageMargin = -64
@@ -130,69 +131,66 @@ class MainFragment : BaseFragment() {
         viewModel.getListDaysLiveData().observe(this, daysObserver)
     }
 
-    /**
-     * Muestro un dialogo para que el usuario pueda seleccionar la ubicación que más le interese
-     */
-    private fun openDialog() {
+    private fun openDialogWithLocations() {
         val dialogBuilder = AlertDialog.Builder(this.requireContext())
         val inflater = this.layoutInflater
         val dialogView = inflater.inflate(R.layout.dialog_cities, null)
         dialogBuilder.setView(dialogView)
 
-        var alert = dialogBuilder.create()
+        val alert = dialogBuilder.create()
         alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alert.show()
 
         dialogView.findViewById<Button>(R.id.singapur).setOnClickListener {
             wantLocation = true
-            binding.city.text = "Singapur"
-            binding.zeeLoader.showView(true)
-            binding.viewpager.showView(false)
-            lifecycleScope.launch { viewModel.getListDays("1.28967", "103.85007") }
+            binding.city.text = SINGAPORE
+            binding.zeeLoader.show()
+            binding.viewpager.hide()
+            viewModel.getListDays("1.28967", "103.85007")
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.london).setOnClickListener {
             wantLocation = true
-            binding.city.text = "London"
-            binding.zeeLoader.showView(true)
-            binding.viewpager.showView(false)
-            lifecycleScope.launch { viewModel.getListDays("51.5072", "-0.1275") }
+            binding.city.text = LONDON
+            binding.zeeLoader.show()
+            binding.viewpager.hide()
+            viewModel.getListDays("51.5072", "-0.1275")
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.madrid).setOnClickListener {
             wantLocation = true
-            binding.city.text = "Madrid"
-            binding.zeeLoader.showView(true)
-            binding.viewpager.showView(false)
-            lifecycleScope.launch { viewModel.getListDays("40.4167", "-3.70325") }
+            binding.city.text = MADRID
+            binding.zeeLoader.show()
+            binding.viewpager.hide()
+            viewModel.getListDays("40.4167", "-3.70325")
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.new_york).setOnClickListener {
             wantLocation = true
-            binding.city.text = "New York"
-            binding.zeeLoader.showView(true)
-            binding.viewpager.showView(false)
-            lifecycleScope.launch { viewModel.getListDays("40.6643", "-73.9385") }
+            binding.city.text = NEW_YORK
+            binding.zeeLoader.show()
+            binding.viewpager.hide()
+            viewModel.getListDays("40.6643", "-73.9385")
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.paris).setOnClickListener {
             wantLocation = true
-            binding.city.text = "Paris"
-            binding.zeeLoader.showView(true)
-            binding.viewpager.showView(false)
-            lifecycleScope.launch { viewModel.getListDays("48.8032", "2.3511") }
+            binding.city.text = PARIS
+            binding.zeeLoader.show()
+            binding.viewpager.hide()
+            viewModel.getListDays("48.8032", "2.3511")
             alert.dismiss()
         }
 
         dialogView.findViewById<Button>(R.id.current).setOnClickListener {
             wantLocation = true
-            binding.city.text = "Current City"
-            binding.zeeLoader.showView(true)
-            binding.viewpager.showView(false)
+            binding.city.text = CURRENT_CITY
+            binding.zeeLoader.show()
+            binding.viewpager.hide()
             toggleUpdates()
             alert.dismiss()
         }
@@ -221,19 +219,14 @@ class MainFragment : BaseFragment() {
     }
 
     private fun isLocationEnabled(): Boolean {
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun toggleUpdates() {
         if (!checkLocation()) return
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
             } else {
                 requestPermissions(
@@ -260,11 +253,7 @@ class MainFragment : BaseFragment() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     // permission was granted
-                    if (ActivityCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
+                    if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             0,
