@@ -12,7 +12,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 val moduleApp = module {
     single { ConnectToApi(get()) }
     single { DaysUseCase(get()) }
-    single { DayViewModel.MyViewModelFactory(get()) }
     single { Retrofit.Builder()
         .baseUrl(END_POINT)
         .addConverterFactory(GsonConverterFactory.create())

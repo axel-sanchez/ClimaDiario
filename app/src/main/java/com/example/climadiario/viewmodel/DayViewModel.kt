@@ -27,7 +27,7 @@ class DayViewModel(private val daysUseCase: DaysUseCase) : ViewModel() {
         return listData
     }
 
-    class MyViewModelFactory(private val daysUseCase: DaysUseCase): ViewModelProvider.Factory {
+    class DayViewModelFactory(private val daysUseCase: DaysUseCase): ViewModelProvider.Factory {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return modelClass.getConstructor(DaysUseCase::class.java).newInstance(daysUseCase)

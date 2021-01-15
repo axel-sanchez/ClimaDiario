@@ -21,13 +21,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.example.climadiario.R
 import com.example.climadiario.common.hide
 import com.example.climadiario.common.show
 import com.example.climadiario.data.models.Day
 import com.example.climadiario.databinding.FragmentMainBinding
+import com.example.climadiario.domain.DaysUseCase
 import com.example.climadiario.ui.adapter.ItemViewPager
 import com.example.climadiario.ui.adapter.ViewPageAdapter
 import com.example.climadiario.viewmodel.DayViewModel
@@ -52,18 +53,17 @@ const val CURRENT_CITY = "Current City"
 @RequiresApi(Build.VERSION_CODES.N)
 class MainFragment : Fragment() {
 
-    private val viewModelFactory: DayViewModel.MyViewModelFactory by inject()
+    private val daysUseCase: DaysUseCase by inject()
 
     private lateinit var locationManager: LocationManager
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
 
-    /**Se utiliza para que solo se pida la ubicación cuando quiera el desarrollador*/
     private var wantLocation = true
 
-    private val viewModel: DayViewModel by lazy {
-        ViewModelProviders.of(requireActivity(), viewModelFactory).get(DayViewModel::class.java)
-    }
+    private val viewModel: DayViewModel by viewModels(
+        factoryProducer = { DayViewModel.DayViewModelFactory(daysUseCase) }
+    )
 
     private val locationListener: LocationListener = object : LocationListener {
         @SuppressLint("SetTextI18n")
@@ -105,7 +105,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViewModelAndObserve() {
-        val daysObserver = Observer<List<Day>> {
+        viewModel.getListDaysLiveData().observe(this, {
             binding.zeeLoader.hide()
             binding.viewpager.show()
             WeatherFragment.staticDays = it
@@ -127,8 +127,7 @@ class MainFragment : Fragment() {
 
             binding.viewpager.pageMargin = -64
 
-        }
-        viewModel.getListDaysLiveData().observe(this, daysObserver)
+        })
     }
 
     private fun openDialogWithLocations() {
@@ -228,6 +227,7 @@ class MainFragment : Fragment() {
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                //Nothing
             } else {
                 requestPermissions(
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),

@@ -1,4 +1,4 @@
-package com.example.climadiario
+package com.example.climadiario.application
 
 import android.app.Application
 import android.widget.Toast
